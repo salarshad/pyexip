@@ -11,5 +11,8 @@ sources_with_path = ["%s/%s" % (src_dir, source) for source in sources]
 
 setup(
     cmdclass = {'build_ext': build_ext},
-    ext_modules = cythonize([Extension("bin/pyexip", sources_with_path)])
+    ext_modules = cythonize([Extension("bin/pyexip", 
+                                        sources_with_path, 
+                                        extra_objects=["libexip.a"]
+                                        )])
 )
