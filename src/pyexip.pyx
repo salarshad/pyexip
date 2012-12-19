@@ -302,13 +302,13 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
         Index valuePartitionCapacity
         void * user_defined_data
     ctypedef EXIOptions EXIOptions
-    cdef struct EXIheader:
+    cdef struct cEXIheader "EXIheader":
         unsigned char has_cookie
         unsigned char has_options
         unsigned char is_preview_version
         int16_t version_number
         EXIOptions opts
-    ctypedef EXIheader EXIheader
+    ctypedef cEXIheader ccEXIheader
     ctypedef size_t SmallIndex
     cdef struct QNameID:
         SmallIndex uriId
@@ -503,7 +503,7 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
     ctypedef EXIPSchema EXIPSchema
     cdef struct EXIStream:
         BinaryBuffer buffer
-        EXIheader header
+        ccEXIheader header
         StreamContext context
         ValueTable valueTable
         EXIGrammarStack * gStack
@@ -598,13 +598,13 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
         Index valuePartitionCapacity
         void * user_defined_data
     ctypedef EXIOptions EXIOptions
-    cdef struct EXIheader:
+    cdef struct ccEXIheader:
         unsigned char has_cookie
         unsigned char has_options
         unsigned char is_preview_version
         int16_t version_number
         EXIOptions opts
-    ctypedef EXIheader EXIheader
+    ctypedef ccEXIheader ccEXIheader
     ctypedef size_t SmallIndex
     cdef struct QNameID:
         SmallIndex uriId
@@ -847,7 +847,7 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
     ctypedef EXIPSchema EXIPSchema
     cdef struct EXIStream:
         BinaryBuffer buffer
-        EXIheader header
+        ccEXIheader header
         StreamContext context
         ValueTable valueTable
         EXIGrammarStack * gStack
@@ -919,7 +919,7 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
 
 #cdef struct EXIStream:
 #    BinaryBuffer buffer
-#    EXIheader header
+#    ccEXIheader header
 #    StreamContext context
 #    ValueTable valueTable
 #    EXIGrammarStack * gStack
@@ -927,6 +927,7 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
 #    EXIPSchema * schema
 
 from libc.stdlib cimport malloc, free
+
 cdef extern from "stdlib.h":
      void *memcpy(void *dst, void *src, long n)
 
@@ -947,17 +948,17 @@ cdef class PyBinaryBuffer:
         if self.obj.buf is not NULL:
             free(self.obj.buf)
 
-#    cdef struct EXIheader:
+#    cdef struct ccEXIheader:
         # unsigned char has_cookie
         # unsigned char has_options
         # unsigned char is_preview_version
         # int16_t version_number
         # EXIOptions opts
 
-cdef class PyEXIheader:
-    cdef EXIheader obj
+cdef class EXIheader:
+    cdef cEXIheader obj
     def __cinit__(self, unsigned char has_cookie, unsigned char has_options):
-        memcpy(&self.obj, NULL, sizeof(EXIheader))
+        memcpy(&self.obj, NULL, sizeof(cEXIheader))
 
         self.obj.has_cookie = has_cookie
         self.obj.has_options = has_options
