@@ -920,3 +920,15 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
 
 cdef extern from "../exip-0.4.1/include/stringManipulate.h":
     errorCode asciiToString(char *, String *, AllocList *, unsigned char)
+
+cdef extern from "../exip-0.4.1/src/contentIO/include/headerEncode.h":
+    errorCode encodeHeader(EXIStream *)
+
+
+cdef extern from '../exip-0.4.1/include/procTypes.h':
+    cdef enum: 
+        STRICT = 0x02
+        SCHEMA_ID_ABSENT = 0
+        
+cdef enum: 
+    FALSE = 0x0
