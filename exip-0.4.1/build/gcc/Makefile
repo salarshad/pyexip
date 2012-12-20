@@ -92,7 +92,7 @@ INCDIRS += -I$(target)
 LDFLAGS += -L$(LIB_BIN_DIR) 
 
 # Used by included Makefiles to compile; hides implementation.
-COMPILE = $(CC) $(CFLAGS) $(INCDIRS)
+COMPILE = $(CC)  -fPIC $(CFLAGS) $(INCDIRS) 
 
 # Tests all targets by default. May override in environment to specify checks to run, for example:
 #   $make check CHECK_TARGETS="streamio strict_grammar"
