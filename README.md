@@ -6,7 +6,7 @@ An EXI (Efficient XML Interchange) solution for Python.
 This is a wrapper on the C implementation EXIP (http://exip.sourceforge.net/) using Cython.
 
 **Compilation:**  
-Compile the extension module (bin/pyexip.so) using the provided Makefile.
+Compile the extension module (pyexip.so) using the provided Makefile.
 
 **Current Status:** (updated 12-21-2012)
 + Wrappers created for:
