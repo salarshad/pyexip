@@ -168,9 +168,9 @@ cdef class BinaryBuffer:
         # EXIOptions opts
 
 cdef class EXIheader:
-    cdef pyexipd.cEXIheader obj
+    cdef pyexipd.EXIheader obj
     def __cinit__(self, unsigned char has_cookie, unsigned char has_options):
-        memset(&self.obj, 0, sizeof(pyexipd.cEXIheader))
+        memset(&self.obj, 0, sizeof(pyexipd.EXIheader))
 
         self.obj.has_cookie = has_cookie
         self.obj.has_options = has_options
