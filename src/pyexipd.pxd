@@ -1,21 +1,63 @@
 cdef extern from "../exip-0.4.1/include/grammarGenerator.h":
     ctypedef long unsigned int size_t
     ctypedef size_t Index
+    ctypedef size_t SmallIndex
+    ctypedef short unsigned int uint16_t
+    ctypedef unsigned int uint32_t
+    ctypedef short int int16_t
+    ctypedef long int int64_t
+    ctypedef char CharType
+    ctypedef char errorCode
+    ctypedef int64_t Integer
+    ctypedef float Decimal
+    
+    cdef enum EventType:
+        EVENT_SD = 0
+        EVENT_ED = 1
+        EVENT_SE_QNAME = 5
+        EVENT_SE_URI = 6
+        EVENT_SE_ALL = 7
+        EVENT_EE = 8
+        EVENT_AT_QNAME = 2
+        EVENT_AT_URI = 3
+        EVENT_AT_ALL = 4
+        EVENT_CH = 9
+        EVENT_NS = 10
+        EVENT_CM = 11
+        EVENT_PI = 12
+        EVENT_DT = 13
+        EVENT_ER = 14
+        EVENT_SC = 15
+        EVENT_VOID = 16
+    ctypedef EventType EventType
+    cdef enum EXIType:
+        VALUE_TYPE_NONE = 1
+        VALUE_TYPE_STRING = 2
+        VALUE_TYPE_FLOAT = 3
+        VALUE_TYPE_DECIMAL = 4
+        VALUE_TYPE_DATE_TIME = 5
+        VALUE_TYPE_BOOLEAN = 6
+        VALUE_TYPE_BINARY = 7
+        VALUE_TYPE_LIST = 8
+        VALUE_TYPE_QNAME = 9
+        VALUE_TYPE_UNTYPED = 10
+        VALUE_TYPE_INTEGER = 20
+        VALUE_TYPE_SMALL_INTEGER = 21
+        VALUE_TYPE_NON_NEGATIVE_INT = 22
+    ctypedef EXIType EXIType
+    
     cdef struct ioStream:
         size_t(*readWriteToStream)(void *, size_t, void *)
         void * stream
     ctypedef ioStream IOStream
-    
     cdef struct allocBlock:
         void * * allocation
         allocBlock * nextBlock
-    ctypedef size_t SmallIndex
     cdef struct allocList:
         allocBlock * firstBlock
         allocBlock * lastBlock
         SmallIndex currAllocSlot
     ctypedef allocList AllocList
-    ctypedef short unsigned int uint16_t
     cdef struct dynArray:
         size_t entrySize
         uint16_t chunkEntries
@@ -29,7 +71,6 @@ cdef extern from "../exip-0.4.1/include/grammarGenerator.h":
         VxEntry * vx
         Index count
     ctypedef VxTable VxTable
-    ctypedef char CharType
     cdef struct StringType:
         CharType * str
         Index length
@@ -59,25 +100,6 @@ cdef extern from "../exip-0.4.1/include/grammarGenerator.h":
         UriEntry * uri
         SmallIndex count
     ctypedef UriTable UriTable
-    cdef enum EventType:
-        EVENT_SD = 0
-        EVENT_ED = 1
-        EVENT_SE_QNAME = 5
-        EVENT_SE_URI = 6
-        EVENT_SE_ALL = 7
-        EVENT_EE = 8
-        EVENT_AT_QNAME = 2
-        EVENT_AT_URI = 3
-        EVENT_AT_ALL = 4
-        EVENT_CH = 9
-        EVENT_NS = 10
-        EVENT_CM = 11
-        EVENT_PI = 12
-        EVENT_DT = 13
-        EVENT_ER = 14
-        EVENT_SC = 15
-        EVENT_VOID = 16
-    ctypedef EventType EventType
     cdef struct QNameID:
         SmallIndex uriId
         Index lnId
@@ -102,24 +124,6 @@ cdef extern from "../exip-0.4.1/include/grammarGenerator.h":
         unsigned char props
         SmallIndex contentIndex
     ctypedef EXIGrammar EXIGrammar
-
-    cdef enum EXIType:
-        VALUE_TYPE_NONE = 1
-        VALUE_TYPE_STRING = 2
-        VALUE_TYPE_FLOAT = 3
-        VALUE_TYPE_DECIMAL = 4
-        VALUE_TYPE_DATE_TIME = 5
-        VALUE_TYPE_BOOLEAN = 6
-        VALUE_TYPE_BINARY = 7
-        VALUE_TYPE_LIST = 8
-        VALUE_TYPE_QNAME = 9
-        VALUE_TYPE_UNTYPED = 10
-        VALUE_TYPE_INTEGER = 20
-        VALUE_TYPE_SMALL_INTEGER = 21
-        VALUE_TYPE_NON_NEGATIVE_INT = 22
-    ctypedef EXIType EXIType
-    ctypedef long int int64_t
-    ctypedef unsigned int uint32_t
     cdef struct SimpleType:
         EXIType exiType
         uint16_t facetPresenceMask
@@ -156,25 +160,20 @@ cdef extern from "../exip-0.4.1/include/grammarGenerator.h":
         Index staticGrCount
         EnumTable enumTable
     ctypedef EXIPSchema EXIPSchema
-    ctypedef char errorCode
     errorCode generateSchemaInformedGrammars(BinaryBuffer *, unsigned int, unsigned char, EXIPSchema *)
     void destroySchema(EXIPSchema *)
 
 
 cdef extern from "../exip-0.4.1/include/EXISerializer.h":
-    
     cdef struct BinaryBuffer:
         char * buf
         Index bufLen
         Index bufContent
         IOStream ioStrm
     ctypedef BinaryBuffer BinaryBuffer
-    ctypedef short int int16_t
-    
     cdef struct DatatypeRepresentationMap:
         void * TODO
     ctypedef DatatypeRepresentationMap DatatypeRepresentationMap
-    
     cdef struct EXIOptions:
         unsigned char enumOpt
         unsigned char preserve
@@ -193,7 +192,6 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
         EXIOptions opts
     ctypedef EXIheader EXIheader
     ctypedef size_t SmallIndex
-    
     cdef struct StreamContext:
         Index bufferIndx
         unsigned char bitPointer
@@ -203,7 +201,6 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
         unsigned int expectATData
         Index attrTypeId
     ctypedef StreamContext StreamContext
-    
     cdef struct N10ValueEntry4DOT_24E:
         QNameID forQNameId
         Index vxEntryId
@@ -220,13 +217,11 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
         hashtable * hashTbl
         Index globalId
     ctypedef ValueTable ValueTable
-    
     cdef struct GrammarStackNode:
         EXIGrammar * grammar
         SmallIndex lastNonTermID
         GrammarStackNode * nextInStack
     ctypedef GrammarStackNode EXIGrammarStack
-
     cdef struct EXIStream:
         BinaryBuffer buffer
         EXIheader header
@@ -268,11 +263,9 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
     errorCode processingInstruction(EXIStream *)
     errorCode endElement(EXIStream *)
     errorCode selfContained(EXIStream *)
-    ctypedef int64_t Integer
     errorCode intData(EXIStream *, Integer)
     errorCode booleanData(EXIStream *, unsigned char)
     errorCode binaryData(EXIStream *, char *, Index)
-    ctypedef float Decimal
     errorCode decimalData(EXIStream *, Decimal)
     errorCode startElement(EXIStream *, QName)
     errorCode listData(EXIStream *, unsigned int)
@@ -289,10 +282,12 @@ cdef extern from "../exip-0.4.1/include/EXISerializer.h":
     errorCode stringData(EXIStream *, String)
     errorCode endDocument(EXIStream *)
     errorCode serializeEvent(EXIStream *, unsigned char, Index, QName *)
-
-
-cdef extern from "../exip-0.4.1/include/EXIParser.h":
     
+cdef extern from '../exip-0.4.1/include/contentHandler.h':
+    cdef enum:
+        EXIP_HANDLER_OK = 0
+        EXIP_HANDLER_STOP = 1
+        
     cdef struct ContentHandler:
         char(*startDocument)(void *)
         char(*endDocument)(void *)
@@ -314,6 +309,8 @@ cdef extern from "../exip-0.4.1/include/EXIParser.h":
         char(*fatalError)(char, char *, void *)
         char(*selfContained)(void *)
     ctypedef ContentHandler ContentHandler
+    
+cdef extern from "../exip-0.4.1/include/EXIParser.h":
     cdef struct Parser:
         EXIStream strm
         ContentHandler handler
@@ -330,11 +327,18 @@ cdef extern from "../exip-0.4.1/include/stringManipulate.h":
 cdef extern from "../exip-0.4.1/src/contentIO/include/headerEncode.h":
     errorCode encodeHeader(EXIStream *)
 
-
 cdef extern from '../exip-0.4.1/include/procTypes.h':
     cdef enum: 
         STRICT = 0x02
         SCHEMA_ID_ABSENT = 0
         
+
+    
+        
 cdef enum: 
     FALSE = 0x0
+    ERR_OK = 0
+    
+cdef struct applicationData:
+    unsigned int elementCount
+    unsigned int nestingLevel
